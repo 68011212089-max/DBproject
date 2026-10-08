@@ -7,7 +7,7 @@
 DB_HOST = "localhost"               # TODO: host ที่อาจารย์แจกให้
 DB_USER = "root"                       # TODO: username ของนิสิต
 DB_PASSWORD = "root"                # TODO: password ของนิสิต
-DB_NAME = "database"              # TODO: ชื่อฐานข้อมูลของนิสิต
+DB_NAME = "project69"              # TODO: ชื่อฐานข้อมูลของนิสิต
 DB_PORT = 3306
 
 # ★ ถ้าใช้ MySQL ในเครื่องตัวเอง (ดูคู่มือหน้า 12) ให้ใช้ค่านี้แทน 4 บรรทัดบน
