@@ -1,83 +1,79 @@
 -- schema.sql - ร้านค้าออนไลน์ (นิสิตออกแบบและเขียนเอง)
--- กติกา: 1 ออเดอร์มีหลายสินค้า (M:N: order × product ผ่าน order_line)
--- รีวิว = M:N (customer × product), การชำระเงิน 1:M จาก shop_order
+-- กติกา: 1 ออเดอร์มีหลายสินค้า (m:n: order × product ผ่าน order_line)
+-- รีวิว = m:n (customer × product), การชำระเงิน 1:m จาก shop_order
 -- ===============================================================
 
-CREATE TABLE customer (
-    cust_id INT AUTO_INCREMENT PRIMARY KEY,
-    -- TODO: name, email, address, tier
-    name varchar(50) NOT NULL,
-    email varchar(100) NOT NULL UNIQUE,
-    address varchar(100) NOT NULL,
-    tier varchar(50) NOT NULL
+create table customer (
+    cust_id int auto_increment primary key,
+    -- todo: name, email, address, tier
+    name varchar(50) not null,
+    email varchar(100) not null unique,
+    address varchar(100) not null,
+    tier enum('normal', 'vip') not null
 );
 
-CREATE TABLE product (
-    product_id INT AUTO_INCREMENT PRIMARY KEY,
-    -- TODO: name, category, price, stock
-    name varchar(50) NOT NULL,
-    category varchar(50) NOT NULL,
-    price int NOT NULL,
-    stock int NOT NULL
+create table product (
+    product_id int auto_increment primary key,
+    -- todo: name, category, price, stock
+    name varchar(50) not null,
+    category varchar(50) not null,
+    price int not null,
+    stock int not null
 );
 
-CREATE TABLE shop_order (
-    order_id INT AUTO_INCREMENT PRIMARY KEY,
-    -- TODO: cust_id (FK), order_date, status ENUM('pending','shipped')
+create table shop_order (
+    order_id int auto_increment primary key,
+    -- todo: cust_id (fk), order_date, status enum('pending','shipped')
     -- * ไม่ต้องมีคอลัมน์ยอดรวม - คำนวณจาก order_line (ดู @ search_orders ใน db.py)
-    cust_id int NOT NULL,
+    cust_id int not null,
     order_date date,
-    status ENUM('pending','shipped'),
+    status enum('pending','shipped'),
 
-    FOREIGN KEY (cust_id) REFERENCES customer(cust_id)
+    foreign key (cust_id) references customer(cust_id)
 );
 
-CREATE TABLE order_line (       -- M:N: shop_order × product
-    -- TODO: order_id (FK), product_id (FK), qty, unit_price ; PRIMARY KEY (order_id, product_id)
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    qty INT NOT NULL,
-    unit_price INT NOT NULL,
-
-    PRIMARY KEY (order_id, product_id),
-
-    FOREIGN KEY (order_id)
-        REFERENCES shop_order(order_id),
-
-    FOREIGN KEY (product_id)
-        REFERENCES product(product_id)
+create table order_line (
+    -- m:n: shop_order × product
+    -- todo: order_id (fk), product_id (fk), qty, unit_price ; primary key (order_id, product_id)
+    order_id int not null,
+    product_id int not null,
+    qty int not null,
+    unit_price int not null,
+    primary key (order_id, product_id),
+    foreign key (order_id)
+        references shop_order(order_id),
+    foreign key (product_id)
+        references product(product_id)
 );
 
-CREATE TABLE review (           -- M:N: customer × product
-    -- TODO: cust_id (FK), product_id (FK), rating, comment, review_date ; PRIMARY KEY (cust_id, product_id)
-    cust_id INT NOT NULL,
-    product_id INT NOT NULL,
-    rating INT NOT NULL,
-    comment VARCHAR(255),
-    review_date DATE,
-
-    PRIMARY KEY (cust_id, product_id),
-
-    FOREIGN KEY (cust_id)
-        REFERENCES customer(cust_id),
-
-    FOREIGN KEY (product_id)
-        REFERENCES product(product_id)
+create table review (
+    -- m:n: customer × product
+    -- todo: cust_id (fk), product_id (fk), rating, comment, review_date ; primary key (cust_id, product_id)
+    cust_id int not null,
+    product_id int not null,
+    rating int not null,
+    comment varchar(255),
+    review_date date,
+    primary key (cust_id, product_id),
+    foreign key (cust_id)
+        references customer(cust_id),
+    foreign key (product_id)
+        references product(product_id)
 );
 
-CREATE TABLE payment (           -- 1:M จาก shop_order
-    payment_id INT AUTO_INCREMENT PRIMARY KEY,
-    -- TODO: order_id (FK), method, amount, paid_date
-    order_id INT NOT NULL,
-    method VARCHAR(50) NOT NULL,
-    amount INT NOT NULL,
-    paid_date DATE,
-
-    FOREIGN KEY (order_id)
-        REFERENCES shop_order(order_id)
+create table payment (
+    -- 1:m จาก shop_order
+    payment_id int auto_increment primary key,
+    -- todo: order_id (fk), method, amount, paid_date
+    order_id int not null,
+    method varchar(50) not null,
+    amount int not null,
+    paid_date date,
+    foreign key (order_id)
+        references shop_order(order_id)
 );
 
--- TODO: INSERT ข้อมูลตัวอย่างตามตาราง
+-- todo: insert ข้อมูลตัวอย่างตามตาราง
 --
 --    * ควรมีทั้งออเดอร์ที่ชำระเงินแล้ว (มีแถวใน payment) และที่ยังไม่ชำระ
 --      ไว้ทดสอบการจัดส่ง/การกรอง
