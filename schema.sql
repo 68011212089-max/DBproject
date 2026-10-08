@@ -7,7 +7,7 @@ CREATE TABLE customer (
     cust_id INT AUTO_INCREMENT PRIMARY KEY
     -- TODO: name, email, address, tier
     --5555
-    --554
+    --52
 );
 CREATE TABLE product (
     product_id INT AUTO_INCREMENT PRIMARY KEY
