@@ -27,8 +27,7 @@ create table shop_order (
     -- * ไม่ต้องมีคอลัมน์ยอดรวม - คำนวณจาก order_line (ดู @ search_orders ใน db.py)
     cust_id int not null,
     order_date date,
-    status enum('pending','shipped'),
-
+    status enum('pending','shipped'), 
     foreign key (cust_id) references customer(cust_id)
 );
 

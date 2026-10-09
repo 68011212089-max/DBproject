@@ -43,63 +43,101 @@ def search_customers(filters):
     คำใบ้: เริ่มจาก sql = "SELECT * FROM customer WHERE 1=1"
     แล้วต่อเงื่อนไขเฉพาะ filter ที่มีค่า (ข้อความใช้ LIKE %s, อื่น ๆ ใช้ = %s)"""
     # TODO: เขียน SQL ค้นหาแบบยืดหยุ่นตาม filters (ใช้ %s เสมอ)
-    _todo("search_customers")
+    # _todo("search_customers")
+    sql = "SELECT * FROM customer WHERE 1=1"
+    params = []
+
+    if filters.get("name"):
+        sql += " AND name LIKE %s"
+        params.append("%" + filters["name"] + "%")
+    if filters.get("email"):
+        sql += " AND email LIKE %s"
+        params.append("%" + filters["email"] + "%")
+    if filters.get("tier"):
+        sql += " AND tier = %s"
+        params.append(filters["tier"])
+
+    sql += " ORDER BY cust_id"
+    return run_query(sql, params)
 
 
 def get_customer(cust_id):
     """ดึง ลูกค้า 1 รายการตาม cust_id (ใช้ตอนเปิดฟอร์มแก้ไข)"""
     # TODO: SELECT * FROM customer WHERE cust_id = %s แล้วคืนแถวเดียว
-    _todo("get_customer")
+    # _todo("get_customer")
+    rows = run_query("SELECT * FROM customer WHERE cust_id = %s", (cust_id,))
+    return rows[0] if rows else None
 
 
 def create_customer(data):
     """เพิ่ม ลูกค้า ใหม่ — data มีคีย์: name, email, address, tier"""
     # TODO: INSERT INTO customer (...) VALUES (%s, ...)
-    _todo("create_customer")
-
+    # _todo("create_customer")
+    sql = """INSERT INTO customer (name, email, address, tier) VALUES (%s, %s, %s, %s)"""
+    return run_command(sql, (data["name"], data["email"], data["address"], data["tier"]))
 
 def update_customer(cust_id, data):
     """แก้ไข ลูกค้า ตาม cust_id"""
     # TODO: UPDATE customer SET ... WHERE cust_id=%s
-    _todo("update_customer")
-
+    # _todo("update_customer")
+    sql = """UPDATE customer SET name=%s, email=%s, address=%s, tier=%s WHERE cust_id=%s"""
+    return run_command(sql, (data["name"], data["email"], data["address"], data["tier"], cust_id))
 
 def delete_customer(cust_id):
     """ลบ ลูกค้า ตาม cust_id"""
     # TODO: DELETE FROM customer WHERE cust_id=%s
-    _todo("delete_customer")
-
+    # _todo("delete_customer")
+    sql = """DELETE FROM customer WHERE cust_id=%s"""
+    return run_command(sql, (cust_id,))
 # ---------- สินค้า (product) ----------
 def search_products(filters):
     """ค้นหา สินค้า ตามเงื่อนไข (name, category)
     คำใบ้: เริ่มจาก sql = "SELECT * FROM product WHERE 1=1"
     แล้วต่อเงื่อนไขเฉพาะ filter ที่มีค่า (ข้อความใช้ LIKE %s, อื่น ๆ ใช้ = %s)"""
     # TODO: เขียน SQL ค้นหาแบบยืดหยุ่นตาม filters (ใช้ %s เสมอ)
-    _todo("search_products")
+    # _todo("search_products")
+    sql = "SELECT * FROM product WHERE 1=1"
+    params = []
 
+    if filters.get("name"):
+        sql += " AND name LIKE %s"
+        params.append("%" + filters["name"] + "%")
+    if filters.get("category"):
+        sql += " AND category = %s"
+        params.append(filters["category"])
+
+    return run_query(sql, params)
 
 def get_product(product_id):
     """ดึง สินค้า 1 รายการตาม product_id (ใช้ตอนเปิดฟอร์มแก้ไข)"""
     # TODO: SELECT * FROM product WHERE product_id = %s แล้วคืนแถวเดียว
-    _todo("get_product")
+    # _todo("get_product")
+    rows = run_query("SELECT * FROM product WHERE product_id = %s", (product_id,))
+    return rows[0] if rows else None
 
 
 def create_product(data):
     """เพิ่ม สินค้า ใหม่ — data มีคีย์: name, category, price, stock"""
     # TODO: INSERT INTO product (...) VALUES (%s, ...)
-    _todo("create_product")
+    # _todo("create_product")
+    sql = """INSERT INTO product (name, category, price, stock) VALUES (%s, %s, %s, %s)"""
+    return run_command(sql, (data["name"], data["category"], data["price"], data["stock"]))
 
 
 def update_product(product_id, data):
     """แก้ไข สินค้า ตาม product_id"""
     # TODO: UPDATE product SET ... WHERE product_id=%s
-    _todo("update_product")
+    # _todo("update_product")
+    sql = """UPDATE product SET name=%s, category=%s, price=%s, stock=%s WHERE product_id=%s"""
+    return run_command(sql, (data["name"], data["category"], data["price"], data["stock"], product_id))
 
 
 def delete_product(product_id):
     """ลบ สินค้า ตาม product_id"""
     # TODO: DELETE FROM product WHERE product_id=%s
-    _todo("delete_product")
+    # _todo("delete_product")
+    sql = """DELETE FROM product WHERE product_id=%s"""
+    return run_command(sql, (product_id,))
 
 # ---------- ออเดอร์ (shop_order) ----------
 def search_orders(filters):
@@ -111,13 +149,33 @@ def search_orders(filters):
         LEFT JOIN กับ subquery ที่รวมยอดของแต่ละ order_id แล้วใช้ IFNULL(..., 0)
       - เงื่อนไขทุกตัวใช้ = %s"""
     # TODO: เขียน SQL ค้นหาแบบยืดหยุ่นตาม filters (ใช้ %s เสมอ)
-    _todo("search_orders")
+    # _todo("search_orders")
+    sql = """SELECT o.order_id, o.cust_id, c.name AS customer_name, o.order_date, o.status,
+             IFNULL(SUM(ol.qty * ol.unit_price), 0) AS total
+             FROM shop_order o
+             LEFT JOIN customer c ON o.cust_id = c.cust_id
+             LEFT JOIN order_line ol ON o.order_id = ol.order_id
+             GROUP BY o.order_id,o.cust_id, c.name, o.order_date, o.status
+             HAVING 1=1"""
+             
+
+    params = []
+    if filters.get("cust_id"):
+        sql += " AND o.cust_id = %s"
+        params.append(filters["cust_id"])
+    if filters.get("status"):
+        sql += " AND o.status = %s"
+        params.append(filters["status"])
+
+    return run_query(sql, params)
 
 
 def get_order(order_id):
     """ดึง ออเดอร์ 1 รายการตาม order_id (ใช้ตอนเปิดฟอร์มแก้ไข)"""
     # TODO: SELECT * FROM shop_order WHERE order_id = %s แล้วคืนแถวเดียว
-    _todo("get_order")
+    # _todo("get_order")
+    rows = run_query("SELECT * FROM shop_order WHERE order_id = %s", (order_id,))
+    return rows[0] if rows else None
 
 
 def check_can_ship(order_id):
@@ -128,7 +186,10 @@ def check_can_ship(order_id):
          (หรือ SELECT COUNT(*) ... ก็ได้)
     ตัวอย่าง: raise ValueError("ออเดอร์นี้ยังไม่ได้ชำระเงิน จัดส่งไม่ได้")"""
     # TODO: เขียนการตรวจตามคำใบ้
-    _todo("check_can_ship")
+    # _todo("check_can_ship")
+    rows = run_query("SELECT EXISTS (SELECT 1 FROM payment WHERE order_id = %s) AS paid", (order_id,))
+    if not rows[0]["paid"]:
+        raise ValueError("ออเดอร์นี้ยังไม่ได้ชำระเงิน จัดส่งไม่ได้")
 
 
 def create_order(data):
@@ -137,7 +198,11 @@ def create_order(data):
       1) ออเดอร์ใหม่ยังไม่มีการชำระเงิน → ถ้า status = 'shipped' ให้ raise ValueError ได้เลย
       2) INSERT INTO shop_order (...) VALUES (%s, ...)"""
     # TODO: เขียนตามคำใบ้
-    _todo("create_order")
+    # _todo("create_order")
+    if data["status"] == "shipped":
+        raise ValueError("ออเดอร์ใหม่ยังไม่ได้ชำระเงิน จัดส่งไม่ได้")
+    sql = """INSERT INTO shop_order (cust_id, order_date, status) VALUES (%s, %s, %s)"""
+    return run_command(sql, (data["cust_id"], data["order_date"], data["status"]))
 
 
 def update_order(order_id, data):
@@ -146,7 +211,11 @@ def update_order(order_id, data):
       1) ถ้า status ใหม่ = 'shipped' → เรียก check_can_ship(order_id) ก่อน
       2) UPDATE shop_order SET ... WHERE order_id=%s"""
     # TODO: เขียนตามคำใบ้
-    _todo("update_order")
+    # _todo("update_order")
+    if data.get("status") == "shipped":
+        check_can_ship(order_id)
+    sql = """UPDATE shop_order SET cust_id=%s, order_date=%s, status=%s WHERE order_id=%s"""
+    return run_command(sql, (data["cust_id"], data["order_date"], data["status"], order_id))
 
 
 def delete_order(order_id):
@@ -156,7 +225,12 @@ def delete_order(order_id):
          ถ้ามี → raise ValueError("ออเดอร์นี้ชำระเงินแล้ว ลบไม่ได้")
       2) ลบแถวลูกใน order_line ก่อน (FK) แล้วจึง DELETE FROM shop_order WHERE order_id=%s"""
     # TODO: เขียนตามคำใบ้
-    _todo("delete_order")
+    # _todo("delete_order")
+    rows = run_query("SELECT EXISTS (SELECT 1 FROM payment WHERE order_id = %s) AS paid", (order_id,))
+    if rows[0]["paid"]:
+        raise ValueError("ออเดอร์นี้ชำระเงินแล้ว ลบไม่ได้")
+    sql = """DELETE FROM shop_order WHERE order_id=%s"""
+    return run_command(sql, (order_id,))
 
 
 # ============================================================
@@ -177,16 +251,24 @@ def report_summary():
     #            ...
     #          """
     # return run_query(sql)[0]      ← [0] = เอาแถวแรก (ผลมีแถวเดียว) ได้เป็น dict
-
+    sql = """
+        SELECT
+            (SELECT COUNT(*) FROM customer) AS 'ลูกค้า',
+            (SELECT COUNT(*) FROM product) AS 'สินค้า',
+            (SELECT COUNT(*) FROM shop_order) AS 'ออเดอร์',
+            (SELECT COUNT(*) FROM review) AS 'รีวิว' ,
+            (SELECT COUNT(*) FROM customer WHERE tier = 'vip') AS 'VIP',
+            (SELECT IFNULL(SUM(amount), 0) FROM payment) AS 'ยอดชำระเงินรวม' """
     # TODO: ระหว่างที่ยังไม่ได้เขียน SQL คืนค่า None ให้การ์ดแสดง "—" รอไว้
-    return {
-        "ลูกค้า":         None,   # (SELECT COUNT(*) FROM customer)
-        "สินค้า":         None,   # นับสินค้าทั้งหมด
-        "ออเดอร์":        None,   # นับออเดอร์ทั้งหมด
-        "รีวิว":          None,   # นับรีวิวทั้งหมด
-        "คิดเพิ่มเอง 1":  None,   # ตั้งชื่อการ์ดใหม่ + เขียน SQL เอง
-        "คิดเพิ่มเอง 2":  None,   # ตั้งชื่อการ์ดใหม่ + เขียน SQL เอง
-    }
+    # return {
+    #      "ลูกค้า":         None,   # (SELECT COUNT(*) FROM customer)
+    #      "สินค้า":         None,   # นับสินค้าทั้งหมด
+    #      "ออเดอร์":        None,   # นับออเดอร์ทั้งหมด
+    #      "รีวิว":          None,   # นับรีวิวทั้งหมด
+    #      "คิดเพิ่มเอง 1":  None,   # ตั้งชื่อการ์ดใหม่ + เขียน SQL เอง
+    #     "คิดเพิ่มเอง 2":  None,   # ตั้งชื่อการ์ดใหม่ + เขียน SQL เอง
+    #  }
+    return run_query(sql)[0]
 
 def report_best_selling():
     """📈 สินค้าขายดี (Best Sellers)
