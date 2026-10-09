@@ -274,19 +274,44 @@ def report_best_selling():
     """📈 สินค้าขายดี (Best Sellers)
     คำใบ้: JOIN order_line→product, GROUP BY product, SUM(qty), ORDER BY DESC, LIMIT 5"""
     # TODO: เขียน SQL รายงานนี้ (เขียน JOIN แบบ explicit INNER JOIN ... ON ...)
-    _todo("report_best_selling")
+    # _todo("report_best_selling")
+    sql = """SELECT p.product_id, p.name AS product_name, SUM(ol.qty) AS total_qty
+             FROM order_line ol
+             INNER JOIN product p ON ol.product_id = p.product_id
+             GROUP BY p.product_id, p.name
+             ORDER BY total_qty DESC
+             LIMIT 5"""
+    return run_query(sql)
 
 def report_customers_above_avg():
     """🏅 ลูกค้าที่ซื้อมากกว่าค่าเฉลี่ย (Above Average)
     คำใบ้: JOIN shop_order→order_line, GROUP BY customer, HAVING SUM(qty*unit_price) > (subquery AVG)"""
     # TODO: เขียน SQL รายงานนี้ (เขียน JOIN แบบ explicit INNER JOIN ... ON ...)
-    _todo("report_customers_above_avg")
+    # _todo("report_customers_above_avg")
+    sql = """SELECT c.cust_id, c.name AS customer_name, SUM(ol.qty * ol.unit_price) AS total_spent
+             FROM shop_order so
+             INNER JOIN order_line ol ON so.order_id = ol.order_id
+             INNER JOIN customer c ON so.cust_id = c.cust_id
+             GROUP BY c.cust_id, c.name
+             HAVING total_spent > (SELECT AVG(total_spent) FROM (
+                 SELECT SUM(ol2.qty * ol2.unit_price) AS total_spent
+                 FROM shop_order so2
+                 INNER JOIN order_line ol2 ON so2.order_id = ol2.order_id
+                 GROUP BY so2.cust_id
+             ) AS avg_spending)"""
+    return run_query(sql)
 
 def report_high_rated():
     """⭐ สินค้าคะแนนรีวิวเฉลี่ย ≥ 4 (HAVING)
     คำใบ้: JOIN review→product, GROUP BY product, HAVING AVG(rating) >= 4"""
     # TODO: เขียน SQL รายงานนี้ (เขียน JOIN แบบ explicit INNER JOIN ... ON ...)
-    _todo("report_high_rated")
+    # _todo("report_high_rated")
+    sql = """SELECT p.product_id, p.name AS product_name, AVG(r.rating) AS avg_rating
+             FROM review r
+             INNER JOIN product p ON r.product_id = p.product_id
+             GROUP BY p.product_id, p.name
+             HAVING avg_rating >= 4"""
+    return run_query(sql)
 
 # ============================================================
 #  รายการรายงานที่แสดงบนหน้า /report  (เรียงตามลำดับที่แสดง)
