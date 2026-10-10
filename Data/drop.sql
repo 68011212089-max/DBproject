@@ -1,6 +1,10 @@
-drop table if exists payment;
-drop table if exists review;
-drop table if exists order_line;
-drop table if exists shop_order;
-drop table if exists product;
-drop table if exists customer;
+-- ลบตารางเดิมตามลำดับ
+DROP TABLE IF EXISTS cart_item;
+DROP TABLE IF EXISTS cart;
+DROP TABLE IF EXISTS review;
+DROP TABLE IF EXISTS payment;
+DROP TABLE IF EXISTS order_line;
+DROP TABLE IF EXISTS shop_order;
+DROP TABLE IF EXISTS customer_address;
+DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS customer;
