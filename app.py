@@ -112,7 +112,36 @@ def order_update(_id):
 def order_delete(_id):
     return safe(db.delete_order, _id)
 
+# ---- ที่อยู่ลูกค้า ----
+@app.route("/api/customer_addresses", methods=["GET"])
+def addresses_list():
+    filters = {k: v for k, v in request.args.items() if v}
+    return safe(db.search_customer_addresses, filters)
 
+@app.route("/api/customer_addresses/<int:_id>", methods=["GET"])
+def customer_address_get(_id):
+    return safe(db.get_customer_address, _id)
+
+@app.route("/api/customer_addresses", methods=["POST"])
+def customer_address_create():
+    return safe(db.create_customer_address, request.json)
+
+@app.route("/api/customer_addresses/<int:_id>", methods=["PUT"])
+def customer_address_update(_id):
+    return safe(db.update_customer_address, _id, request.json)
+
+@app.route("/api/customer_addresses/<int:_id>", methods=["DELETE"])
+def customer_address_delete(_id):
+    return safe(db.delete_customer_address, _id)
+# ---- จังหวัด ----
+@app.route("/api/provinces", methods=["GET"])
+def provinces_list():
+    filters = {k: v for k, v in request.args.items() if v}
+    return safe(db.search_provinces, filters)
+
+@app.route("/api/provinces/<int:_id>", methods=["GET"])
+def province_get(_id):
+    return safe(db.get_province, _id)
 # ---- รายงาน ----
 @app.route("/api/reports/summary")
 def report_summary():

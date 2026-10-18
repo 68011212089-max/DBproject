@@ -2,6 +2,11 @@
 -- กติกา: 1 ออเดอร์มีหลายสินค้า (m:n: order × product ผ่าน order_line)
 -- รีวิว = m:n (customer × product), การชำระเงิน 1:m จาก shop_order
 -- ===============================================================
+-- 10. จังหวัด 
+CREATE TABLE province (
+    province_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
 -- 1. ตารางลูกค้า
 CREATE TABLE customer (
     cust_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -29,11 +34,13 @@ CREATE TABLE customer_address (
     recipient_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     address_detail VARCHAR(255) NOT NULL,
-    province VARCHAR(100) NOT NULL,
+    province_id INT NOT NULL,
     postal_code VARCHAR(10) NOT NULL,
     FOREIGN KEY (cust_id)
         REFERENCES customer(cust_id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (province_id)
+        REFERENCES province(province_id)
 );
 
 -- 4. ตารางคำสั่งซื้อ
@@ -129,6 +136,7 @@ CREATE TABLE cart_item (
         REFERENCES product(product_id),
     CHECK (qty > 0)
 );
+
 -- todo: insert ข้อมูลตัวอย่างตามตาราง
 --
 --    * ควรมีทั้งออเดอร์ที่ชำระเงินแล้ว (มีแถวใน payment) และที่ยังไม่ชำระ

@@ -145,7 +145,73 @@ const ENTITIES = {
         ]
       }
     ]
+  },
+    "customer_addresses": {
+    "label": "ที่อยู่ลูกค้า",
+    "api": "/api/customer_addresses",
+    "idKey": "address_id",
+    "search": [
+      {
+        "key": "cust_name",
+        "label": "ลูกค้า",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/customers",
+          "value": "name",
+          "label": "name"
+        }
+      },
+      {
+        "key": "province_name",
+        "label": "จังหวัด",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/provinces",
+          "value": "name",
+          "label": "name"
+        }
+      }
+    ],
+    "form": [
+      {
+        "key": "cust_id",
+        "label": "ลูกค้า",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/customers",
+          "value": "cust_id",
+          "label": "name"
+        }
+      },
+      {
+        "key": "receiver_name",
+        "label": "ชื่อผู้รับ",
+        "type": "text"
+      },
+      {
+        "key": "phone",
+        "label": "เบอร์โทร",
+        "type": "text"
+      },
+      {
+        "key": "address",
+        "label": "ที่อยู่",
+        "type": "text"
+      },
+      { 
+        "key": "province",
+        "label": "จังหวัด",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/provinces",
+          "value": "province_id",
+          "label": "name"
+        }
+      }
+
+    ]
   }
+
 };
 
 let current = Object.keys(ENTITIES)[0];

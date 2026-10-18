@@ -749,7 +749,51 @@ def delete_cart_item(cart_id, product_id):
         DELETE FROM cart_item
         WHERE cart_id=%s AND product_id=%s
     """, (cart_id, product_id))
+# ============================================================
+# 9. PROVINCE
+# ============================================================
 
+def search_provinces(filters):
+    sql = """
+        SELECT * FROM province WHERE 1=1
+    """
+    params = []
+
+    if filters.get("province_id"):
+        sql += " AND province_id = %s"
+        params.append(filters["province_id"])
+    if filters.get("name"):
+        sql += " AND name LIKE %s"
+        params.append("%" + filters["name"] + "%")
+
+   
+    return run_query(sql, params)
+
+
+def get_province(province_id):
+    return run_query(
+        "SELECT * FROM province WHERE province_id = %s",
+        (province_id,)
+    )
+# ============================================================
+# customers_address
+# ============================================================
+def search_customer_addresses(filters):
+    sql = """SELECT cust.name AS customer_name, ca.recipient_name , ca.phone, ca.address_detail , 
+  		ads.name AS province_name FROM customer_address ca
+        INNER JOIN customer cust ON ca.cust_id = cust.cust_id
+        INNER JOIN province ads ON ca.province_id  = ads.province_id
+        WHERE 1=1
+    """
+    params = []
+    if filters.get("cust_name"):
+        sql += " AND cust.name LIKE %s"
+        params.append("%"+filters["cust_name"]+ "%")
+    if filters.get("province_name"):
+        sql += " AND ads.name LIKE %s"
+        params.append("%"+filters["province_name"] +"%")
+
+    return run_query(sql, params)
 
 # ============================================================
 # REPORT 1: DASHBOARD SUMMARY
