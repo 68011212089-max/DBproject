@@ -2,6 +2,10 @@
 #  db.py — ชั้นติดต่อฐานข้อมูล  ★★★ นิสิตเขียน SQL ในไฟล์นี้ ★★★
 #  มองหาคำว่า  # TODO  ทุกฟังก์ชัน — ใช้ %s เป็น placeholder เสมอ (กัน SQL injection)
 # ============================================================
+from warnings import filters
+
+from warnings import filters
+
 import mysql.connector
 import config
 
@@ -181,20 +185,20 @@ def delete_product(product_id):
 
 def search_customer_addresses(filters):
     sql = """
-        SELECT ca.*, c.name AS customer_name
-        FROM customer_address ca
-        INNER JOIN customer c ON ca.cust_id = c.cust_id
-        WHERE 1=1
-    """
+            SELECT ca.address_id, cust.name AS customer_name, ca.recipient_name , ca.phone, ca.address_detail , 
+  		    ads.name AS province_name FROM customer_address ca
+            INNER JOIN customer cust ON ca.cust_id = cust.cust_id
+            INNER JOIN province ads ON ca.province_id  = ads.province_id
+            WHERE 1=1
+     """
     params = []
+    if filters.get("cust_name"):
+        sql += " AND cust.name LIKE %s"
+        params.append("%"+filters["cust_name"]+ "%")
 
-    if filters.get("cust_id"):
-        sql += " AND ca.cust_id = %s"
-        params.append(filters["cust_id"])
-
-    if filters.get("province"):
-        sql += " AND ca.province = %s"
-        params.append(filters["province"])
+    if filters.get("province_id"):
+        sql += " AND ca.province_id = %s"
+        params.append(filters["province_id"])
 
     sql += " ORDER BY ca.address_id"
     return run_query(sql, params)
@@ -212,7 +216,7 @@ def create_customer_address(data):
     sql = """
         INSERT INTO customer_address
         (cust_id, recipient_name, phone, address_detail,
-         province, postal_code)
+         province_id, postal_code)
         VALUES (%s, %s, %s, %s, %s, %s)
     """
 
@@ -221,7 +225,7 @@ def create_customer_address(data):
         data["recipient_name"],
         data["phone"],
         data["address_detail"],
-        data["province"],
+        data["province_id"],
         data["postal_code"]
     ))
 
@@ -230,7 +234,7 @@ def update_customer_address(address_id, data):
     sql = """
         UPDATE customer_address
         SET cust_id=%s, recipient_name=%s, phone=%s,
-            address_detail=%s, province=%s, postal_code=%s
+            address_detail=%s, province_id=%s, postal_code=%s
         WHERE address_id=%s
     """
 
@@ -239,11 +243,26 @@ def update_customer_address(address_id, data):
         data["recipient_name"],
         data["phone"],
         data["address_detail"],
-        data["province"],
+        data["province_id"],
         data["postal_code"],
         address_id
     ))
+def create_customer_address(data):
+    sql = """
+        INSERT INTO customer_address
+        (cust_id, recipient_name, phone, address_detail,
+         province_id, postal_code)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """
 
+    return run_command(sql, (
+        data["cust_id"],
+        data["recipient_name"],
+        data["phone"],
+        data["address_detail"],
+        data["province_id"],
+        data["postal_code"]
+    ))
 
 def delete_customer_address(address_id):
     # ออเดอร์ที่ใช้ที่อยู่นี้จะมี address_id เป็น NULL
@@ -779,7 +798,7 @@ def get_province(province_id):
 # customers_address
 # ============================================================
 def search_customer_addresses(filters):
-    sql = """SELECT cust.name AS customer_name, ca.recipient_name , ca.phone, ca.address_detail , 
+    sql = """SELECT ca.address_id, cust.name AS customer_name, ca.recipient_name , ca.phone, ca.address_detail , 
   		ads.name AS province_name FROM customer_address ca
         INNER JOIN customer cust ON ca.cust_id = cust.cust_id
         INNER JOIN province ads ON ca.province_id  = ads.province_id

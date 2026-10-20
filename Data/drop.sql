@@ -10,3 +10,4 @@ DROP TABLE IF EXISTS customer_address;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS province;
+

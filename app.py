@@ -113,8 +113,9 @@ def order_delete(_id):
     return safe(db.delete_order, _id)
 
 # ---- ที่อยู่ลูกค้า ----
+
 @app.route("/api/customer_addresses", methods=["GET"])
-def addresses_list():
+def customer_addresses_list():
     filters = {k: v for k, v in request.args.items() if v}
     return safe(db.search_customer_addresses, filters)
 

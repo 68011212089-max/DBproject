@@ -184,7 +184,7 @@ const ENTITIES = {
         }
       },
       {
-        "key": "receiver_name",
+        "key": "recipient_name",
         "label": "ชื่อผู้รับ",
         "type": "text"
       },
@@ -194,12 +194,12 @@ const ENTITIES = {
         "type": "text"
       },
       {
-        "key": "address",
+        "key": "address_detail",
         "label": "ที่อยู่",
         "type": "text"
       },
       { 
-        "key": "province",
+        "key": "province_id",
         "label": "จังหวัด",
         "type": "select",
         "optionsFrom": {
@@ -207,6 +207,11 @@ const ENTITIES = {
           "value": "province_id",
           "label": "name"
         }
+      },
+      {
+        "key": "postal_code", 
+        "label": "รหัสไปรษณีย์",
+        "type": "text"
       }
 
     ]

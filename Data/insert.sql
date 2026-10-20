@@ -67,3 +67,5 @@ INSERT INTO cart_item (cart_id, product_id, qty) VALUES
 (1, 3, 1),
 (2, 1, 1),
 (3, 2, 2);
+
+
