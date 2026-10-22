@@ -86,14 +86,14 @@ def create_customer(data):
 def update_customer(cust_id, data):
     sql = """
         UPDATE customer
-        SET name=%s, email=%s, address=%s, tier=%s
+        SET name=%s, email=%s, province_id=%s, tier=%s
         WHERE cust_id=%s
     """
 
     return run_command(sql, (
         data["name"],
         data["email"],
-        blank_to_none(data.get("address")),
+        blank_to_none(data.get("province_id")),
         data["tier"],
         cust_id
     ))
@@ -221,7 +221,7 @@ def create_customer_address(data):
         data["recipient_name"],
         data["phone"],
         data["address_detail"],
-        data["province"],
+        data["province_id"],
         data["postal_code"]
     ))
 

@@ -44,9 +44,14 @@ const ENTITIES = {
         "type": "text"
       },
       {
-        "key": "address",
+        "key": "province_id",
         "label": "ที่อยู่",
-        "type": "text"
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/provinces",
+          "value": "province_id",
+          "label": "name"
+        }
       },
       {
         "key": "tier",
