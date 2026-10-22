@@ -628,20 +628,24 @@ def delete_review(cust_id, product_id):
 # 8. CART
 # ============================================================
 
-def search_carts(filters):
+def search_cart(filters):
     sql = """
-        SELECT ca.*, c.name AS customer_name
-        FROM cart ca
-        INNER JOIN customer c ON ca.cust_id = c.cust_id
+        SELECT
+            c.cart_id,
+            c.cust_id,
+            cu.name AS customer_name,
+            c.created_at
+        FROM cart c
+        INNER JOIN customer cu ON c.cust_id = cu.cust_id
         WHERE 1=1
     """
     params = []
 
     if filters.get("cust_id"):
-        sql += " AND ca.cust_id = %s"
+        sql += " AND c.cust_id = %s"
         params.append(filters["cust_id"])
 
-    sql += " ORDER BY ca.cart_id"
+    sql += " ORDER BY c.cart_id"
     return run_query(sql, params)
 
 
@@ -693,29 +697,38 @@ def delete_cart(cart_id):
 def search_cart_items(filters):
     sql = """
         SELECT
-            ci.cart_id,
-            ci.product_id,
+            c.cart_id,
+            cust.name AS customer_name,
+            c.product_id,
             p.name AS product_name,
             p.price,
-            ci.qty,
-            ci.qty * p.price AS subtotal
-        FROM cart_item ci
-        INNER JOIN product p ON ci.product_id = p.product_id
+            c.qty,
+            c.qty * p.price AS subtotal
+        FROM cart_item c
+        INNER JOIN product p ON c.product_id = p.product_id
+        INNER JOIN cart cart ON c.cart_id = cart.cart_id
+        INNER JOIN customer cust ON cart.cust_id = cust.cust_id
         WHERE 1=1
     """
     params = []
 
-    if filters.get("cart_id"):
-        sql += " AND ci.cart_id = %s"
-        params.append(filters["cart_id"])
+    if filters.get("cust_id"):
+        sql += " AND cust.cust_id = %s"
+        params.append(filters["cust_id"])
 
     if filters.get("product_id"):
-        sql += " AND ci.product_id = %s"
+        sql += " AND c.product_id = %s"
         params.append(filters["product_id"])
 
-    sql += " ORDER BY ci.cart_id, ci.product_id"
+    sql += " ORDER BY c.cart_id, c.product_id"
     return run_query(sql, params)
+def get_cart_item(cart_id, product_id):
+    rows = run_query(
+        "SELECT * FROM cart_item WHERE cart_id = %s AND product_id = %s",
 
+        (cart_id, product_id)
+    )
+    return rows[0] if rows else None
 
 def create_cart_item(data):
     sql = """
@@ -775,26 +788,6 @@ def get_province(province_id):
         "SELECT * FROM province WHERE province_id = %s",
         (province_id,)
     )
-# ============================================================
-# customers_address
-# ============================================================
-def search_customer_addresses(filters):
-    sql = """SELECT cust.name AS customer_name, ca.recipient_name , ca.phone, ca.address_detail , 
-  		ads.name AS province_name FROM customer_address ca
-        INNER JOIN customer cust ON ca.cust_id = cust.cust_id
-        INNER JOIN province ads ON ca.province_id  = ads.province_id
-        WHERE 1=1
-    """
-    params = []
-    if filters.get("cust_name"):
-        sql += " AND cust.name LIKE %s"
-        params.append("%"+filters["cust_name"]+ "%")
-    if filters.get("province_name"):
-        sql += " AND ads.name LIKE %s"
-        params.append("%"+filters["province_name"] +"%")
-
-    return run_query(sql, params)
-
 # ============================================================
 # REPORT 1: DASHBOARD SUMMARY
 # ============================================================

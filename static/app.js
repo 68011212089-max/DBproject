@@ -210,8 +210,61 @@ const ENTITIES = {
       }
 
     ]
+  },
+  "cart_items": {
+    "label": "ตะกร้า",
+    "api": "/api/cart_items",
+    "idKey": "cart_id",
+    "search": [
+      {
+        "key": "cust_id",
+        "label": "ลูกค้า",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/customers",
+          "value": "cust_id",
+          "label": "name"
+        }
+      },
+      {
+        "key": "product_id",
+        "label": "สินค้า",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/products",
+          "value": "product_id",
+          "label": "name"
+        }
+      }
+    ],
+    "form": [
+      {
+        "key": "cart_id",
+        "label": "ตะกร้า",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/carts",
+          "value": "cart_id",
+          "label": "cart_id"
+        }
+      },
+      {
+        "key": "product_id",
+        "label": "สินค้า",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/products",
+          "value": "product_id",
+          "label": "name"
+        }
+      },
+      {
+        "key": "qty",
+        "label": "จำนวน",
+        "type": "number"
+      }
+    ]
   }
-
 };
 
 let current = Object.keys(ENTITIES)[0];
