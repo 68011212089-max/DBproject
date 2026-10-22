@@ -1,8 +1,8 @@
 -- 1. ตารางลูกค้า
-INSERT INTO customer (name, email, address, tier) VALUES
-('สมชาย ใจดี', 'somchai@gmail.com', 'ขอนแก่น', 'normal'),
-('สมหญิง รักเรียน', 'somying@gmail.com', 'เชียงใหม่', 'vip'),
-('วิชัย มีสุข', 'wichai@gmail.com', 'กรุงเทพมหานคร', 'normal');
+INSERT INTO customer (name, email,province_id , tier) VALUES
+('สมชาย ใจดี', 'somchai@gmail.com', '52', 'normal'),
+('สมหญิง รักเรียน', 'somying@gmail.com', '64', 'vip'),
+('วิชัย มีสุข', 'wichai@gmail.com', '49', 'normal');
 
 
 -- 2. ตารางสินค้า

@@ -2,7 +2,7 @@
 -- กติกา: 1 ออเดอร์มีหลายสินค้า (m:n: order × product ผ่าน order_line)
 -- รีวิว = m:n (customer × product), การชำระเงิน 1:m จาก shop_order
 -- ===============================================================
--- 10. จังหวัด 
+-- จังหวัด 
 CREATE TABLE province (
     province_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
@@ -12,7 +12,7 @@ CREATE TABLE customer (
     cust_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    address VARCHAR(255),
+    province_id INT,
     tier ENUM('normal', 'vip') NOT NULL DEFAULT 'normal'
 );
 
@@ -40,13 +40,13 @@ CREATE TABLE customer_address (
         REFERENCES customer(cust_id)
         ON DELETE CASCADE,
     FOREIGN KEY (province_id)
-        REFERENCES province(province_id)
+        REFERENCES province_id(province_id)
 );
 
 -- 4. ตารางคำสั่งซื้อ
 CREATE TABLE shop_order (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
-    cust_id INT NOT NULL,
+    cust_id INT not null,
     address_id INT,
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     status ENUM(
@@ -56,7 +56,7 @@ CREATE TABLE shop_order (
         'cancelled'
     ) NOT NULL DEFAULT 'pending',
     FOREIGN KEY (cust_id)
-        REFERENCES customer(cust_id),
+        REFERENCES customer(cust_id) on delete cascade ,
     FOREIGN KEY (address_id)
         REFERENCES customer_address(address_id)
         ON DELETE SET NULL
@@ -125,10 +125,11 @@ CREATE TABLE cart (
 
 -- 9. ตารางรายการสินค้าในตะกร้า
 CREATE TABLE cart_item (
+	cart_item_id int AUTO_INCREMENT PRIMARY KEY,
     cart_id INT NOT NULL,
     product_id INT NOT NULL,
     qty INT NOT NULL,
-    PRIMARY KEY (cart_id, product_id),
+    PRIMARY KEY (cart_item_id),
     FOREIGN KEY (cart_id)
         REFERENCES cart(cart_id)
         ON DELETE CASCADE,
