@@ -83,6 +83,7 @@ def create_customer(data):
     ))
 
 
+
 def update_customer(cust_id, data):
     sql = """
         UPDATE customer
