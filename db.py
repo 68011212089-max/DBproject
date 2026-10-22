@@ -693,70 +693,65 @@ def delete_cart(cart_id):
 # ============================================================
 # 9. CART_ITEM
 # ============================================================
-
 def search_cart_items(filters):
     sql = """
         SELECT
-            c.cart_id,
-            cust.name AS customer_name,
-            c.product_id,
+            ci.cart_id,
+            ci.product_id,
             p.name AS product_name,
-            p.price,
-            c.qty,
-            c.qty * p.price AS subtotal
-        FROM cart_item c
-        INNER JOIN product p ON c.product_id = p.product_id
-        INNER JOIN cart cart ON c.cart_id = cart.cart_id
-        INNER JOIN customer cust ON cart.cust_id = cust.cust_id
+            ci.qty,
+            o.unit_price,
+            ci.qty * o.unit_price AS subtotal
+        FROM cart_item ci
+        INNER JOIN product p ON ci.product_id = p.product_id
+        INNER JOIN shop_order o ON .cart_id = o.order_id
+        INNER JOIN order_item oi ON ci.product_id = oi.product_id
+
         WHERE 1=1
     """
     params = []
 
-    if filters.get("cust_id"):
-        sql += " AND cust.cust_id = %s"
-        params.append(filters["cust_id"])
+    if filters.get("cart_id"):
+        sql += " AND ci.cart_id = %s"
+        params.append(filters["cart_id"])
 
     if filters.get("product_id"):
-        sql += " AND c.product_id = %s"
+        sql += " AND ci.product_id = %s"
         params.append(filters["product_id"])
 
-    sql += " ORDER BY c.cart_id, c.product_id"
+    sql += " ORDER BY ci.cart_id, ci.product_id"
     return run_query(sql, params)
 def get_cart_item(cart_id, product_id):
     rows = run_query(
         "SELECT * FROM cart_item WHERE cart_id = %s AND product_id = %s",
-
         (cart_id, product_id)
     )
     return rows[0] if rows else None
-
 def create_cart_item(data):
     sql = """
-        INSERT INTO cart_item (cart_id, product_id, qty)
-        VALUES (%s, %s, %s)
+        INSERT INTO cart_item (cart_id, product_id, qty, unit_price)
+        VALUES (%s, %s, %s, %s)
     """
 
     return run_command(sql, (
         data["cart_id"],
         data["product_id"],
-        data["qty"]
+        data["qty"],
+        data["unit_price"]
     ))
-
-
 def update_cart_item(cart_id, product_id, data):
     sql = """
         UPDATE cart_item
-        SET qty=%s
+        SET qty=%s, unit_price=%s
         WHERE cart_id=%s AND product_id=%s
     """
 
     return run_command(sql, (
         data["qty"],
+        data["unit_price"],
         cart_id,
         product_id
     ))
-
-
 def delete_cart_item(cart_id, product_id):
     return run_command("""
         DELETE FROM cart_item

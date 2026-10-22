@@ -3,10 +3,7 @@
 -- รีวิว = m:n (customer × product), การชำระเงิน 1:m จาก shop_order
 -- ===============================================================
 -- จังหวัด 
-CREATE TABLE province (
-    province_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
-);
+
 -- 1. ตารางลูกค้า
 CREATE TABLE customer (
     cust_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,13 +31,13 @@ CREATE TABLE customer_address (
     recipient_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     address_detail VARCHAR(255) NOT NULL,
-    province_id INT NOT NULL,
+    province_id INT,
     postal_code VARCHAR(10) NOT NULL,
     FOREIGN KEY (cust_id)
         REFERENCES customer(cust_id)
         ON DELETE CASCADE,
     FOREIGN KEY (province_id)
-        REFERENCES province_id(province_id)
+        REFERENCES province(province_id)
 );
 
 -- 4. ตารางคำสั่งซื้อ

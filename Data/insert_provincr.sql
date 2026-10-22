@@ -1,3 +1,7 @@
+CREATE TABLE province (
+    province_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
 INSERT INTO province (name)
 VALUES
     ('กรุงเทพมหานคร'),
