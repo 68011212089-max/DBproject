@@ -2,7 +2,6 @@
 -- กติกา: 1 ออเดอร์มีหลายสินค้า (m:n: order × product ผ่าน order_line)
 -- รีวิว = m:n (customer × product), การชำระเงิน 1:m จาก shop_order
 -- ===============================================================
--- จังหวัด 
 
 -- 1. ตารางลูกค้า
 CREATE TABLE customer (
@@ -31,7 +30,7 @@ CREATE TABLE customer_address (
     recipient_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     address_detail VARCHAR(255) NOT NULL,
-    province_id INT,
+    province_id INT NOT NULL,
     postal_code VARCHAR(10) NOT NULL,
     FOREIGN KEY (cust_id)
         REFERENCES customer(cust_id)
@@ -126,7 +125,6 @@ CREATE TABLE cart_item (
     cart_id INT NOT NULL,
     product_id INT NOT NULL,
     qty INT NOT NULL,
-    PRIMARY KEY (cart_item_id),
     FOREIGN KEY (cart_id)
         REFERENCES cart(cart_id)
         ON DELETE CASCADE,

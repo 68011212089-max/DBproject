@@ -230,7 +230,7 @@ def update_customer_address(address_id, data):
     sql = """
         UPDATE customer_address
         SET cust_id=%s, recipient_name=%s, phone=%s,
-            address_detail=%s, province=%s, postal_code=%s
+            address_detail=%s, province_id=%s, postal_code=%s
         WHERE address_id=%s
     """
 
