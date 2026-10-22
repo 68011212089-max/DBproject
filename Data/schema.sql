@@ -37,6 +37,7 @@ CREATE TABLE customer_address (
         ON DELETE CASCADE,
     FOREIGN KEY (province_id)
         REFERENCES province(province_id)
+       ON DELETE CASCADE
 );
 
 -- 4. ตารางคำสั่งซื้อ
@@ -52,7 +53,8 @@ CREATE TABLE shop_order (
         'cancelled'
     ) NOT NULL DEFAULT 'pending',
     FOREIGN KEY (cust_id)
-        REFERENCES customer(cust_id) on delete cascade ,
+        REFERENCES customer(cust_id) 
+        ON DELETE CASCADE,
     FOREIGN KEY (address_id)
         REFERENCES customer_address(address_id)
         ON DELETE SET NULL
@@ -69,7 +71,8 @@ CREATE TABLE order_line (
         REFERENCES shop_order(order_id)
         ON DELETE CASCADE,
     FOREIGN KEY (product_id)
-        REFERENCES product(product_id),
+        REFERENCES product(product_id)
+        ON DELETE CASCADE,
     CHECK (qty > 0),
     CHECK (unit_price >= 0)
 );
@@ -114,7 +117,7 @@ CREATE TABLE cart (
     cart_id INT AUTO_INCREMENT PRIMARY KEY,
     cust_id INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cust_id)
+    FOREIGN KEY (cust_id) 
         REFERENCES customer(cust_id)
         ON DELETE CASCADE
 );
@@ -129,7 +132,8 @@ CREATE TABLE cart_item (
         REFERENCES cart(cart_id)
         ON DELETE CASCADE,
     FOREIGN KEY (product_id)
-        REFERENCES product(product_id),
+        REFERENCES product(product_id)
+        ON DELETE CASCADE,
     CHECK (qty > 0)
 );
 
