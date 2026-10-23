@@ -99,12 +99,12 @@ CREATE TABLE payment (
 
 -- 7. ตารางรีวิวสินค้า
 CREATE TABLE review (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
     cust_id INT NOT NULL,
     product_id INT NOT NULL,
     rating INT NOT NULL,
     comment VARCHAR(255),
     review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (cust_id, product_id),
     FOREIGN KEY (cust_id)
         REFERENCES customer(cust_id)
         ON DELETE CASCADE,

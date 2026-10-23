@@ -585,10 +585,10 @@ def search_reviews(filters):
     return run_query(sql, params)
 
 
-def get_review(cust_id, product_id):
+def get_review(review_id): 
     rows = run_query(
-        "SELECT * FROM review WHERE cust_id = %s AND product_id = %s",
-        (cust_id, product_id)
+        "SELECT * FROM review WHERE review_id = %s",
+        (review_id,)
     )
     return rows[0] if rows else None
 
@@ -609,26 +609,26 @@ def create_review(data):
     ))
 
 
-def update_review(cust_id, product_id, data):
+def update_review(review_id, data):
     sql = """
         UPDATE review
         SET rating=%s, comment=%s
-        WHERE cust_id=%s AND product_id=%s
+        WHERE review_id=%s
     """
 
-    return run_command(sql, (
+    return run_command(sql,(
         data["rating"],
         blank_to_none(data.get("comment")),
-        cust_id,
-        product_id
+        review_id
+        
     ))
 
-def delete_review(cust_id, product_id):
+def delete_review(review_id):
     return run_command("""
         DELETE FROM review
-        WHERE cust_id = %s AND product_id = %s
+        WHERE review_id = %s
         """,
-        (cust_id, product_id)
+        (review_id,)
     )
     
 # ============================================================
