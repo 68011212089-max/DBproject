@@ -81,8 +81,8 @@ CREATE TABLE order_line (
 CREATE TABLE payment (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
-    method ENUM('PromptPay'
-    		'Credit Card'
+    method ENUM('PromptPay',
+    		'Credit Card',
     		'COD') NOT null default 'COD',
     amount DECIMAL(10,2) NOT NULL,
     status ENUM(

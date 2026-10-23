@@ -285,18 +285,23 @@ const ENTITIES = {
         }
       },
       {
-        "key": "amount",
-        "label": "จำนวนเงิน",
-        "type": "number"
-      },
-      {
-        "key": "payment_method",
+        "key": "method",
         "label": "วิธีการชำระเงิน",
         "type": "select",
         "options": [
           "Credit Card",
           "PromptPay",
           "COD"
+        ]
+      },
+      {
+        "key": "status",
+        "label": "สถานะการชำระเงิน",
+        "type": "select",
+        "options": [
+          "pending",
+          "paid",
+          "failed"
         ]
       }
     ]
