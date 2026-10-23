@@ -279,7 +279,12 @@ const ENTITIES = {
       {
         "key": "payment_id",
         "label": "รหัสการชำระเงิน",
-        "type": "number"
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/payments",
+          "value": "payment_id",
+          "label": "payment_id"
+        }
       }
     ],
     "form": [
