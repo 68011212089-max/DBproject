@@ -71,14 +71,14 @@ def get_customer(cust_id):
 
 def create_customer(data):
     sql = """
-        INSERT INTO customer (name, email, address, tier)
+        INSERT INTO customer (name, email, province_id, tier)
         VALUES (%s, %s, %s, %s)
     """
 
     return run_command(sql, (
         data["name"],
         data["email"],
-        blank_to_none(data.get("address")),
+        blank_to_none(data.get("province_id")),
         data.get("tier", "normal")
     ))
 
@@ -180,11 +180,13 @@ def delete_product(product_id):
 # 3. CUSTOMER_ADDRESS
 # ============================================================
 
+
 def search_customer_addresses(filters):
     sql = """
-        SELECT ca.*, c.name AS customer_name
+        SELECT ca.*, c.name AS customer_name, p.name AS province_name
         FROM customer_address ca
         INNER JOIN customer c ON ca.cust_id = c.cust_id
+        INNER JOIN province p ON ca.province_id = p.province_id
         WHERE 1=1
     """
     params = []
@@ -193,9 +195,9 @@ def search_customer_addresses(filters):
         sql += " AND ca.cust_id = %s"
         params.append(filters["cust_id"])
 
-    if filters.get("province"):
-        sql += " AND ca.province = %s"
-        params.append(filters["province"])
+    if filters.get("province_id"):
+        sql += " AND ca.province_id = %s"
+        params.append(filters["province_id"])
 
     sql += " ORDER BY ca.address_id"
     return run_query(sql, params)
@@ -213,7 +215,7 @@ def create_customer_address(data):
     sql = """
         INSERT INTO customer_address
         (cust_id, recipient_name, phone, address_detail,
-         province, postal_code)
+         province_id, postal_code)
         VALUES (%s, %s, %s, %s, %s, %s)
     """
 
@@ -240,7 +242,7 @@ def update_customer_address(address_id, data):
         data["recipient_name"],
         data["phone"],
         data["address_detail"],
-        data["province"],
+        data["province_id"],
         data["postal_code"],
         address_id
     ))
@@ -470,6 +472,10 @@ def search_payments(filters):
     """
     params = []
 
+    if filters.get("payment_id"):
+        sql += " AND p.payment_id = %s"
+        params.append(filters["payment_id"])
+
     if filters.get("order_id"):
         sql += " AND p.order_id = %s"
         params.append(filters["order_id"])
@@ -495,35 +501,31 @@ def get_payment(payment_id):
 
 
 def create_payment(data):
-    sql = """
-        INSERT INTO payment
-        (order_id, method, status , paid_date)
-        VALUES (%s, %s, %s, %s)
-    """
-
     status = data.get("status", "pending")
     paid_date = blank_to_none(data.get("paid_date"))
 
-    if status == "paid" and not paid_date:
-       
-        sql = """
-            INSERT INTO payment
-            (order_id, method, status, paid_date)
-            VALUES (%s, %s, %s, CURRENT_TIMESTAMP)
-        """
-        params = (
-            data["order_id"],
-            data["method"],
-            status,
-            paid_date
-        )
-    else:
-        params = (
-            data["order_id"],
-            data["method"],
-            status,
-            paid_date
-        )
+    sql = """
+        INSERT INTO payment
+            (order_id, method, amount, status, paid_date)
+        SELECT
+            so.order_id,
+            %s,
+            COALESCE(SUM(ol.qty * ol.unit_price), 0),
+            %s,
+            %s
+        FROM shop_order so
+        LEFT JOIN order_line ol
+            ON so.order_id = ol.order_id
+        WHERE so.order_id = %s
+        GROUP BY so.order_id
+    """
+
+    params = (
+        data["method"],
+        status,
+        paid_date,
+        data["order_id"]
+    )
 
     return run_command(sql, params)
 
@@ -583,6 +585,14 @@ def search_reviews(filters):
     return run_query(sql, params)
 
 
+def get_review(cust_id, product_id):
+    rows = run_query(
+        "SELECT * FROM review WHERE cust_id = %s AND product_id = %s",
+        (cust_id, product_id)
+    )
+    return rows[0] if rows else None
+
+
 def create_review(data):
     sql = """
         INSERT INTO review
@@ -613,14 +623,14 @@ def update_review(cust_id, product_id, data):
         product_id
     ))
 
-
 def delete_review(cust_id, product_id):
     return run_command("""
         DELETE FROM review
-        WHERE cust_id=%s AND product_id=%s
-    """, (cust_id, product_id))
-
-
+        WHERE cust_id = %s AND product_id = %s
+        """,
+        (cust_id, product_id)
+    )
+    
 # ============================================================
 # 8. CART
 # ============================================================

@@ -121,7 +121,9 @@ const ENTITIES = {
         "options": [
           "",
           "pending",
-          "shipped"
+          "shipped",
+          "delivered",
+          "cancelled"
         ]
       }
     ],
@@ -147,7 +149,9 @@ const ENTITIES = {
         "type": "select",
         "options": [
           "pending",
-          "shipped"
+          "shipped",
+          "delivered",
+          "cancelled"
         ]
       }
     ]
@@ -158,22 +162,22 @@ const ENTITIES = {
     "idKey": "address_id",
     "search": [
       {
-        "key": "cust_name",
+        "key": "cust_id",
         "label": "ลูกค้า",
         "type": "select",
         "optionsFrom": {
           "api": "/api/customers",
-          "value": "name",
+          "value": "cust_id",
           "label": "name"
         }
       },
       {
-        "key": "province_name",
+        "key": "province_id",
         "label": "จังหวัด",
         "type": "select",
         "optionsFrom": {
           "api": "/api/provinces",
-          "value": "name",
+          "value": "province_id",
           "label": "name"
         }
       }
@@ -205,7 +209,7 @@ const ENTITIES = {
         "type": "text"
       },
       { 
-        "key": "province",
+        "key": "province_id",
         "label": "จังหวัด",
         "type": "select",
         "optionsFrom": {
@@ -357,7 +361,10 @@ const ENTITIES = {
       {
         "key": "rating",
         "label": "คะแนน",
-        "type": "number"
+        "type": "select",
+        "options": [
+          0, 1, 2, 3, 4, 5
+        ]
       },
       {
         "key": "comment",

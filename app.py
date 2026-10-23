@@ -184,6 +184,7 @@ def cart_item_update(_id):
 @app.route("/api/cart_items/<int:_id>", methods=["DELETE"])
 def cart_item_delete(_id):
     return safe(db.delete_cart_item, _id)
+
 # ---- รีวิวสินค้า ----
 @app.route("/api/reviews", methods=["GET"])
 def reviews_list():
@@ -194,22 +195,18 @@ def reviews_list():
 def review_create():
     return safe(db.create_review, request.json)
 
-@app.route("/api/reviews/<int:_id>", methods=["PUT"])
-def review_update(_id):
-    return safe(db.update_review, _id, request.json)
+@app.route("/api/reviews/<int:cust_id>/<int:product_id>", methods=["GET"])
+def review_get(cust_id, product_id):
+    return safe(db.get_review, cust_id, product_id)
 
-@app.route("/api/reviews/<int:_id>", methods=["DELETE"])
-def review_delete(_id):
-    return safe(db.delete_review, _id)
+@app.route("/api/reviews/<int:cust_id>/<int:product_id>", methods=["PUT"])
+def review_update(cust_id, product_id):
+    return safe(db.update_review, cust_id, product_id, request.json)
 
-@app.route("/api/provinces", methods=["GET"])
-def provinces_list():
-    filters = {k: v for k, v in request.args.items() if v}
-    return safe(db.search_provinces, filters)
+@app.route("/api/reviews/<int:cust_id>/<int:product_id>", methods=["DELETE"])
+def review_delete(cust_id, product_id):
+    return safe(db.delete_review, cust_id, product_id)
 
-@app.route("/api/provinces/<int:_id>", methods=["GET"])
-def province_get(_id):
-    return safe(db.get_province, _id)
 # ---- รายงาน ----
 @app.route("/api/reports/summary")
 def report_summary():
