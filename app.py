@@ -89,6 +89,11 @@ def product_update(_id):
 @app.route("/api/products/<int:_id>", methods=["DELETE"])
 def product_delete(_id):
     return safe(db.delete_product, _id)
+# ---- การชำระเงิน ----
+@app.route("/api/payments", methods=["GET"])
+def payments_list():
+    filters = {k: v for k, v in request.args.items() if v}
+    return safe(db.search_payments, filters)
 
 # ---- ออเดอร์ ----
 @app.route("/api/orders", methods=["GET"])

@@ -260,9 +260,41 @@ const ENTITIES = {
       "label": "จำนวน",
       "type": "number"
         }
-      
+    ], 
+  },
+  "payments": {
+    "label": "การชำระเงิน",
+    "api": "/api/payments",
+    "idKey": "payment_id",
+    "search": [
+      {
+        "key": "payment_id",
+        "label": "รหัสการชำระเงิน",
+        "type": "number"
+      }
     ],
-   
+    "form": [
+      {
+        "key": "order_id",
+        "label": "ออเดอร์",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/orders",
+          "value": "order_id",
+          "label": "order_id"
+        }
+      },
+      {
+        "key": "amount",
+        "label": "จำนวนเงิน",
+        "type": "number"
+      },
+      {
+        "key": "payment_method",
+        "label": "วิธีการชำระเงิน",
+        "type": "text"
+      }
+    ]
   }
 };
 
