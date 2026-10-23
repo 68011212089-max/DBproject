@@ -43,7 +43,7 @@ INSERT INTO payment
 (order_id, method, amount, status, paid_date) VALUES
 (1, 'PromptPay', 25700.00, 'pending', NULL),
 (2, 'Credit Card', 890.00, 'paid', '2026-10-02 11:00:00'),
-(3, 'Bank Transfer', 350.00, 'paid', '2026-10-03 15:00:00');
+(3, 'COD', 350.00, 'paid', '2026-10-03 15:00:00');
 
 
 -- 7. ตารางรีวิวสินค้า
