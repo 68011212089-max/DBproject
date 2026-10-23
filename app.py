@@ -95,6 +95,22 @@ def payments_list():
     filters = {k: v for k, v in request.args.items() if v}
     return safe(db.search_payments, filters)
 
+@app.route("/api/payments/<int:_id>", methods=["GET"])
+def payment_get(_id):
+    return safe(db.get_payment, _id)
+
+@app.route("/api/payments", methods=["POST"])
+def payment_create():
+    return safe(db.create_payment, request.json)
+
+@app.route("/api/payments/<int:_id>", methods=["PUT"])
+def payment_update(_id):
+    return safe(db.update_payment, _id, request.json)
+
+@app.route("/api/payments/<int:_id>", methods=["DELETE"])
+def payment_delete(_id):
+    return safe(db.delete_payment, _id)
+
 # ---- ออเดอร์ ----
 @app.route("/api/orders", methods=["GET"])
 def orders_list():

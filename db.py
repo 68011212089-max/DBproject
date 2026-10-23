@@ -497,31 +497,30 @@ def get_payment(payment_id):
 def create_payment(data):
     sql = """
         INSERT INTO payment
-        (order_id, method, amount, status, paid_date)
-        VALUES (%s, %s, %s, %s, %s)
+        (order_id, method, status , paid_date)
+        VALUES (%s, %s, %s, %s)
     """
 
     status = data.get("status", "pending")
     paid_date = blank_to_none(data.get("paid_date"))
 
     if status == "paid" and not paid_date:
-        # หากไม่ได้ระบุวัน ให้ใช้เวลาปัจจุบัน
+       
         sql = """
             INSERT INTO payment
-            (order_id, method, amount, status, paid_date)
-            VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)
+            (order_id, method, status, paid_date)
+            VALUES (%s, %s, %s, CURRENT_TIMESTAMP)
         """
         params = (
             data["order_id"],
             data["method"],
-            data["amount"],
-            status
+            status,
+            paid_date
         )
     else:
         params = (
             data["order_id"],
             data["method"],
-            data["amount"],
             status,
             paid_date
         )
@@ -532,17 +531,14 @@ def create_payment(data):
 def update_payment(payment_id, data):
     sql = """
         UPDATE payment
-        SET order_id=%s, method=%s, amount=%s,
-            status=%s, paid_date=%s
+        SET order_id=%s, method=%s, status=%s
         WHERE payment_id=%s
     """
 
     return run_command(sql, (
         data["order_id"],
         data["method"],
-        data["amount"],
         data["status"],
-        blank_to_none(data.get("paid_date")),
         payment_id
     ))
 
