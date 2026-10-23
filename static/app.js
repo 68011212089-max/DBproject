@@ -299,6 +299,66 @@ const ENTITIES = {
           "COD"
         ]
       }
+    ],
+    
+  },
+  "reviews": {
+    "label": "รีวิวสินค้า",
+    "api": "/api/reviews",
+    "idKey": "review_id",
+    "search": [
+      {
+        "key": "product_id",
+        "label": "สินค้า",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/products",
+          "value": "product_id",
+          "label": "name"
+        }
+      },
+      {
+        "key": "cust_id",
+        "label": "ลูกค้า",  
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/customers",
+          "value": "cust_id",
+          "label": "name"
+        }
+      }
+      ],
+    "form": [
+      {
+        "key": "product_id",
+        "label": "สินค้า",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/products",
+          "value": "product_id",
+          "label": "name"
+        }
+      },
+      {
+        "key": "cust_id",
+        "label": "ลูกค้า",
+        "type": "select",
+        "optionsFrom": {
+          "api": "/api/customers",
+          "value": "cust_id",
+          "label": "name"
+        }
+      },
+      {
+        "key": "rating",
+        "label": "คะแนน",
+        "type": "number"
+      },
+      {
+        "key": "comment",
+        "label": "ความคิดเห็น",
+        "type": "textarea"
+      }
     ]
   }
 };
