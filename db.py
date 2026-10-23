@@ -699,14 +699,13 @@ def search_cart_items(filters):
         SELECT
             ci.cart_id,
             ci.product_id,
-            p.name AS product_name,
-            ci.qty,
-            o.unit_price,
-            ci.qty * o.unit_price AS subtotal
+            p.name AS ชื่อสินค้า,
+            ci.qty as จำนวน,
+            oi.unit_price as ราคาต่อหน่วย,
+            ci.qty * oi.unit_price AS ราคารวม
         FROM cart_item ci
         INNER JOIN product p ON ci.product_id = p.product_id
-        INNER JOIN shop_order o ON .cart_id = o.order_id
-        INNER JOIN order_item oi ON ci.product_id = oi.product_id
+        INNER JOIN order_line oi ON ci.product_id = oi.product_id
 
         WHERE 1=1
     """

@@ -232,6 +232,7 @@ const ENTITIES = {
         "label": "รหัสรายการตะกร้า",
         "type": "number"
       }
+
     ],
     "form": [
       {
@@ -239,7 +240,7 @@ const ENTITIES = {
         "label": "ตะกร้า",
         "type": "select",
         "optionsFrom": {
-          "api": "/api/carts",
+          "api": "/api/cart",
           "value": "cart_id",
           "label": "cart_id"
         }
@@ -265,33 +266,7 @@ const ENTITIES = {
         }
       }
     ],
-    "form": [
-      {
-        "key": "cart_id",
-        "label": "ตะกร้า",
-        "type": "select",
-        "optionsFrom": {
-          "api": "/api/carts",
-          "value": "cart_id",
-          "label": "cart_id"
-        }
-      },
-      {
-        "key": "product_id",
-        "label": "สินค้า",
-        "type": "select",
-        "optionsFrom": {
-          "api": "/api/products",
-          "value": "product_id",
-          "label": "name"
-        }
-      },
-      {
-        "key": "qty",
-        "label": "จำนวน",
-        "type": "number"
-      }
-    ]
+   
   }
 };
 
