@@ -292,7 +292,12 @@ const ENTITIES = {
       {
         "key": "payment_method",
         "label": "วิธีการชำระเงิน",
-        "type": "text"
+        "type": "select",
+        "options": [
+          "Credit Card",
+          "PromptPay",
+          "COD"
+        ]
       }
     ]
   }
