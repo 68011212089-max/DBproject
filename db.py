@@ -697,19 +697,23 @@ def delete_cart(cart_id):
 def search_cart_items(filters):
     sql = """
         SELECT
+            ci.cart_item_id,
             ci.cart_id,
             ci.product_id,
             p.name AS ชื่อสินค้า,
-            ci.qty as จำนวน,
-            oi.unit_price as ราคาต่อหน่วย,
-            ci.qty * oi.unit_price AS ราคารวม
+            ci.qty AS จำนวน,
+            p.price AS ราคาต่อหน่วย,
+            ci.qty * p.price AS ราคารวม
         FROM cart_item ci
-        INNER JOIN product p ON ci.product_id = p.product_id
-        INNER JOIN order_line oi ON ci.product_id = oi.product_id
-
+        INNER JOIN product p
+            ON ci.product_id = p.product_id
         WHERE 1=1
     """
     params = []
+
+    if filters.get("cart_item_id"):
+        sql += " AND ci.cart_item_id = %s"
+        params.append(filters["cart_item_id"])
 
     if filters.get("cart_id"):
         sql += " AND ci.cart_id = %s"
@@ -720,43 +724,51 @@ def search_cart_items(filters):
         params.append(filters["product_id"])
 
     sql += " ORDER BY ci.cart_id, ci.product_id"
+
     return run_query(sql, params)
-def get_cart_item(cart_id, product_id):
+
+
+def get_cart_item(cart_item_id):
     rows = run_query(
-        "SELECT * FROM cart_item WHERE cart_id = %s AND product_id = %s",
-        (cart_id, product_id)
+        "SELECT * FROM cart_item WHERE cart_item_id = %s",
+        (cart_item_id,)
     )
     return rows[0] if rows else None
+
+
 def create_cart_item(data):
     sql = """
-        INSERT INTO cart_item (cart_id, product_id, qty, unit_price)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO cart_item (cart_id, product_id, qty)
+        VALUES (%s, %s, %s)
     """
+    return run_command(sql, (
+        data["cart_id"],
+        data["product_id"],
+        data["qty"]
+    ))
 
+
+def update_cart_item(cart_item_id, data):
+    sql = """
+        UPDATE cart_item
+        SET cart_id = %s,
+            product_id = %s,
+            qty = %s
+        WHERE cart_item_id = %s
+    """
     return run_command(sql, (
         data["cart_id"],
         data["product_id"],
         data["qty"],
-        data["unit_price"]
+        cart_item_id
     ))
-def update_cart_item(cart_id, product_id, data):
-    sql = """
-        UPDATE cart_item
-        SET qty=%s, unit_price=%s
-        WHERE cart_id=%s AND product_id=%s
-    """
 
-    return run_command(sql, (
-        data["qty"],
-        data["unit_price"],
-        cart_id,
-        product_id
-    ))
-def delete_cart_item(cart_id, product_id):
-    return run_command("""
-        DELETE FROM cart_item
-        WHERE cart_id=%s AND product_id=%s
-    """, (cart_id, product_id))
+
+def delete_cart_item(cart_item_id):
+    return run_command(
+        "DELETE FROM cart_item WHERE cart_item_id = %s",
+        (cart_item_id,)
+    )
 # ============================================================
 # 9. PROVINCE
 # ============================================================

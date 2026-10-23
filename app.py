@@ -144,17 +144,25 @@ def cart_items_list():
     filters = {k: v for k, v in request.args.items() if v}
     return safe(db.search_cart_items, filters)
 
+
 @app.route("/api/cart_items", methods=["POST"])
 def cart_item_create():
     return safe(db.create_cart_item, request.json)
 
-@app.route("/api/cart_items/<int:cart_id>/<int:product_id>", methods=["PUT"])
-def cart_item_update(cart_id, product_id):
-    return safe(db.update_cart_item, cart_id, product_id, request.json)
 
-@app.route("/api/cart_items/<int:cart_id>/<int:product_id>", methods=["DELETE"])
-def cart_item_delete(cart_id, product_id):
-    return safe(db.delete_cart_item, cart_id, product_id)
+@app.route("/api/cart_items/<int:_id>", methods=["GET"])
+def cart_item_get(_id):
+    return safe(db.get_cart_item, _id)
+
+
+@app.route("/api/cart_items/<int:_id>", methods=["PUT"])
+def cart_item_update(_id):
+    return safe(db.update_cart_item, _id, request.json)
+
+
+@app.route("/api/cart_items/<int:_id>", methods=["DELETE"])
+def cart_item_delete(_id):
+    return safe(db.delete_cart_item, _id)
 # ---- จังหวัด ----
 @app.route("/api/provinces", methods=["GET"])
 def provinces_list():

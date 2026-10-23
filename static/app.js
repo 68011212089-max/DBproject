@@ -256,15 +256,11 @@ const ENTITIES = {
         }
       },
       {
-        "key": "product_id",
-        "label": "สินค้า",
-        "type": "select",
-        "optionsFrom": {
-          "api": "/api/products",
-          "value": "product_id",
-          "label": "name"
+        "key": "qty",
+      "label": "จำนวน",
+      "type": "number"
         }
-      }
+      
     ],
    
   }
