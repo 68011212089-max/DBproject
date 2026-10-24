@@ -1,5 +1,5 @@
 :root{
-  --navy:#1B2A52; --navy2:#2A3F73; --coral:#EF5B4C; --gold:#F4B731;
+  --navy:#07820e; --navy2:#2A3F73; --coral:#EF5B4C; --gold:#F4B731;
   --ink:#1B2A52; --mute:#6A7798; --line:#DBE2F0; --tint:#F2F5FB; --green:#2FA968;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -35,7 +35,7 @@ body{font-family:"Segoe UI",Tahoma,sans-serif;background:#EEF2F8;color:var(--ink
 .btn:hover{background:var(--tint)}
 .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
 .btn.primary:hover{background:var(--navy2)}
-.btn.add{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.add{background:var(--green);color:#521111;border-color:var(--green)}
 .btn.del{color:var(--coral);border-color:#f3c4bf}
 .btn.sm{padding:5px 12px;font-size:12.5px}
 
