@@ -42,11 +42,16 @@ def _todo(name):
 # ============================================================
 
 def search_customers(filters):
-    sql = "SELECT * FROM customer WHERE 1=1"
+    sql = """
+        SELECT c.cust_id, c.name, c.email, pro.name AS province_name, c.tier
+        FROM customer c
+        LEFT JOIN province pro ON c.province_id = pro.province_id
+        WHERE 1=1
+        """
     params = []
 
     if filters.get("name"):
-        sql += " AND name LIKE %s"
+        sql += " AND c.name LIKE %s"
         params.append("%" + filters["name"] + "%")
 
     if filters.get("email"):
@@ -114,7 +119,9 @@ def delete_customer(cust_id):
 # ============================================================
 
 def search_products(filters):
-    sql = "SELECT * FROM product WHERE 1=1"
+    sql = """
+        SELECT * FROM product WHERE 1=1
+    """
     params = []
 
     if filters.get("name"):
